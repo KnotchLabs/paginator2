@@ -245,7 +245,7 @@ defmodule Paginator do
   def default_fetch_cursor_value(schema, {binding, field})
       when is_atom(binding) and is_atom(field) do
     case Map.get(schema, field) do
-      nil -> Map.get(schema, binding) |> Map.get(field)
+      nil -> fetch_field_on_binding(schema, binding, field)
       value -> value
     end
   end
@@ -269,6 +269,13 @@ defmodule Paginator do
       nil
     else
       first_or_nil(paginated_entries, config)
+    end
+  end
+
+  defp fetch_field_on_binding(schema, binding, field) do
+    case Map.get(schema, binding) do
+      nil -> nil
+      value -> Map.get(value, field)
     end
   end
 
